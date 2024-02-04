@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+ <meta charset="UTF-8">
+ <title>Document</title>
+ <style type="text/css">
+  .grid {
+   margin: auto;
+   width: 530px;
+   text-align: center;
+  }
+  .grid table {
+   border-top: 1px solid #C2D89A;
+   width: 100%;
+   border-collapse: collapse;
+  }
+  .grid th,td {
+   padding: 10;
+   border: 1px dashed #F3DCAB;
+   height: 35px;
+   line-height: 35px;
+  }
+  .grid th {
+   background-color: #F3DCAB;
+  }
+  .grid .film {
+   padding-bottom: 10px;
+   padding-top: 5px;
+   background-color: #F3DCAB;
+  }
+ </style>
+</head>
+<body>
+ <div id="app">
+  <div class="grid">
+   <div>
+    <h1>商品管理</h1>
+    <div class="film">
+     <div>
+      <label for="id">
+       编号：
+      </label>
+      <input type="text" id="id" v-model="id" :disabled="flag"  style="margin-top: 20px;"><br>
+      <label for="name">
+       名称：
+      </label>
+      <input type="text" id="name" v-model="name"><br>
+      <label for="price">
+       价格：
+       
+      </label>
+      <input type="text" id="price" v-model="price"  style="margin-bottom: 20px;"><br>
+    <button @click="handle">提交</button>
+      <button @click="clearForm" style="
+      margin-right: -54px;
+      margin-left: 44px;
+  ">清空</button> <!-- Add Clear button -->
+     </div>
+    </div>
+   </div>
+   <table>
+    <thead>
+     <tr>
+      <th>编号</th>
+      <th>名称</th>
+      <th>价格</th>
+      <th>操作</th>
+     </tr>
+    </thead>
+    <tbody>
+     <tr :key="item.id" v-for="item in films">
+      <td>{{item.id}}</td>
+      <td>{{item.name}}</td>
+      <td>{{item.price}}</td>
+      <td>
+       <a href="" @click.prevent="toEdit(item.id)">修改</a>
+       <span>|</span>
+       <a href="" @click.prevent="deleteFilm(item.id)">删除</a>
+      </td>
+     </tr>
+    </tbody>
+   </table>
+  </div>
+ </div>
+ <script type="text/javascript" src="js/vue3.js"></script>
+ <script type="text/javascript">
+  var vm = new Vue({
+   el: '#app',
+   data: {
+    flag: false,
+    id: '',
+    name: '',
+    price: '',
+    films: [{
+     id: 1,
+     name: '康师傅方便面',
+     price: '6'
+    },{
+     id: 2,
+     name: '百岁山矿泉水',
+     price: '3'
+    },{
+     id: 3,
+     name: '德芙巧克力',
+     price: '10'
+    },{
+     id: 4,
+     name: '酱福猪肘子',
+     price: '40'
+    }]
+   },
+   methods: {
+    handle: function(){
+     if(this.flag) {
+      // Edit film
+      this.films.some((item) => {
+       if(item.id == this.id) {
+        item.name = this.name;
+        item.price = this.price;
+        return true;
+       }
+      });
+      this.flag = false;
+     } else {
+      // Add film
+      var film = {};
+      film.id = this.id;
+      film.name = this.name;
+      film.price = this.price;
+      this.films.push(film);
+      this.clearForm(); // Clear the form
+     }
+    },
+    toEdit: function(id){
+     this.flag = true;
+     var film = this.films.find(function(item){
+      return item.id == id;
+     });
+     this.id = film.id;
+     this.name = film.name;
+     this.price = film.price;
+    },
+    deleteFilm: function(id){
+     var index = this.films.findIndex(function(item){
+      return item.id == id;
+     });
+     this.films.splice(index, 1);
+    },
+    clearForm: function(){
+     this.id = '';
+     this.name = '';
+     this.price = '';
+    }
+   }
+  });
+ </script>
+</body>
+</html>
